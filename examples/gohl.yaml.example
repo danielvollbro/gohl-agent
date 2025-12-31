@@ -1,0 +1,11 @@
+server_url: "http://localhost:8080/api/report"
+
+providers:
+  - system
+  - docker
+
+docker:
+  ignore:
+    - "primework-laravel.test-1"
+    - "primework-redis-1"
+    - "primework-mysql-1"
