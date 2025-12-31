@@ -1,8 +1,12 @@
+version: 2
+
 project_name: gohl
 
 builds:
   - env:
       - CGO_ENABLED=0
+    main: ./cmd/gohl/main.go
+    binary: gohl
     goos:
       - linux
       - windows
