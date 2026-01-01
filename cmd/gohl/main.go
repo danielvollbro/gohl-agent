@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"time"
 	"strings"
+	"time"
 
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
@@ -16,7 +16,8 @@ import (
 	"github.com/danielvollbro/gohl/internal/registry"
 	"github.com/danielvollbro/gohl/internal/storage"
 	"github.com/danielvollbro/gohl/internal/ui"
-	"github.com/danielvollbro/gohl/pkg/plugin"
+
+	api "github.com/danielvollbro/gohl-api"
 )
 
 func main() {
@@ -50,7 +51,7 @@ var scanCmd = &cobra.Command{
 			time.Sleep(time.Second * 1)
 			spinner.Success("Sensors initialized")
 		}
-		
+
 		enabledProviders := viper.GetStringSlice("providers")
 		if len(enabledProviders) == 0 {
 			pterm.Warning.Println("No providers defined in gohl.yaml, running default: system")
@@ -60,21 +61,21 @@ var scanCmd = &cobra.Command{
 		console.Spacer()
 
 		ctx := context.Background()
-		var allReports []*plugin.ScanReport
+		var allReports []*api.ScanReport
 		for _, name := range enabledProviders {
 			scanner, err := registry.GetProvider(name)
 			if err != nil {
 				console.PrintError("Unknown provider in config: '%s' (skipping)", name)
 				continue
 			}
-			
+
 			console.PrintSuccess("Enabled provider: %s\n", name)
 
 			cfg := registry.GetConfig(name)
 
 			info := scanner.Info()
 			scanSpinner, _ := console.StartSpinner(fmt.Sprintf("Running %s...", info.Name))
-			
+
 			report, err := scanner.Analyze(ctx, cfg)
 			if err != nil {
 				if scanSpinner != nil {
@@ -108,10 +109,10 @@ var scanCmd = &cobra.Command{
 
 		// --- CLOUD UPLOAD ---
 		shouldSubmit, _ := cmd.Flags().GetBool("submit")
-		
+
 		if shouldSubmit {
 			console.Spacer()
-			
+
 			serverURL := viper.GetString("server_url")
 			if serverURL == "" {
 				console.PrintError("Cannot submit: 'server_url' is missing in gohl.yaml")
@@ -119,12 +120,16 @@ var scanCmd = &cobra.Command{
 			}
 
 			spinner, _ := console.StartSpinner("Uploading results to cloud...")
-			
+
 			err := client.UploadReport(serverURL, grandReport)
 			if err != nil {
-				if spinner != nil { spinner.Fail("Upload failed: " + err.Error()) }
+				if spinner != nil {
+					spinner.Fail("Upload failed: " + err.Error())
+				}
 			} else {
-				if spinner != nil { spinner.Success("Successfully uploaded to leaderboard!") }
+				if spinner != nil {
+					spinner.Success("Successfully uploaded to leaderboard!")
+				}
 			}
 		}
 	},
@@ -147,13 +152,13 @@ func init() {
 }
 
 func initConfig() {
-    viper.SetConfigName("gohl")
-    viper.SetConfigType("yaml")
-    viper.AddConfigPath(".") 
+	viper.SetConfigName("gohl")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(".")
 
-    if err := viper.ReadInConfig(); err != nil {
-        if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
-            fmt.Println("Config file error:", err)
-        }
-    }
+	if err := viper.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+			fmt.Println("Config file error:", err)
+		}
+	}
 }

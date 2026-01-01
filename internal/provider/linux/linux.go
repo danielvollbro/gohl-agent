@@ -5,10 +5,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/danielvollbro/gohl/pkg/plugin"
+	api "github.com/danielvollbro/gohl-api"
 )
 
-type LinuxProvider struct{
+type LinuxProvider struct {
 	SSHConfigPath string
 	IPForwardPath string
 }
@@ -20,8 +20,8 @@ func New() *LinuxProvider {
 	}
 }
 
-func (p *LinuxProvider) Info() plugin.PluginInfo {
-	return plugin.PluginInfo{
+func (p *LinuxProvider) Info() api.PluginInfo {
+	return api.PluginInfo{
 		ID:          "provider-linux",
 		Name:        "Linux Security Auditor",
 		Version:     "0.1.0",
@@ -30,18 +30,18 @@ func (p *LinuxProvider) Info() plugin.PluginInfo {
 	}
 }
 
-func (p *LinuxProvider) Analyze(ctx context.Context, config map[string]string) (*plugin.ScanReport, error) {
-	var checks []plugin.CheckResult
+func (p *LinuxProvider) Analyze(ctx context.Context, config map[string]string) (*api.ScanReport, error) {
+	var checks []api.CheckResult
 
 	sshContent, err := os.ReadFile(p.SSHConfigPath)
-	
+
 	if err == nil {
 		content := string(sshContent)
 
 		// --- CHECK 1: SSH ROOT LOGIN ---
 		hasNoRoot := strings.Contains(content, "PermitRootLogin no")
-		
-		checks = append(checks, plugin.CheckResult{
+
+		checks = append(checks, api.CheckResult{
 			ID:          "LNX-SSH-ROOT",
 			Name:        "SSH Root Login Disabled",
 			Description: "Checking if direct root login is disabled in sshd_config",
@@ -53,7 +53,7 @@ func (p *LinuxProvider) Analyze(ctx context.Context, config map[string]string) (
 
 		// --- CHECK 2: SSH PASSWORD AUTH ---
 		hasNoPass := strings.Contains(content, "PasswordAuthentication no")
-		checks = append(checks, plugin.CheckResult{
+		checks = append(checks, api.CheckResult{
 			ID:          "LNX-SSH-PASS",
 			Name:        "SSH Key-Only Auth",
 			Description: "Checking if PasswordAuthentication is disabled",
@@ -63,7 +63,7 @@ func (p *LinuxProvider) Analyze(ctx context.Context, config map[string]string) (
 			Remediation: "Use SSH keys! Set 'PasswordAuthentication no' in sshd_config.",
 		})
 	} else {
-		checks = append(checks, plugin.CheckResult{
+		checks = append(checks, api.CheckResult{
 			ID:          "LNX-SSH-READ",
 			Name:        "Read SSH Config",
 			Description: "Attempting to read " + p.SSHConfigPath,
@@ -80,8 +80,8 @@ func (p *LinuxProvider) Analyze(ctx context.Context, config map[string]string) (
 	if err == nil {
 		val := strings.TrimSpace(string(fwdContent))
 		isDisabled := val == "0"
-		
-		checks = append(checks, plugin.CheckResult{
+
+		checks = append(checks, api.CheckResult{
 			ID:          "LNX-NET-FWD",
 			Name:        "IP Forwarding Disabled",
 			Description: "Checking if kernel IP forwarding is off (0)",
@@ -92,7 +92,7 @@ func (p *LinuxProvider) Analyze(ctx context.Context, config map[string]string) (
 		})
 	}
 
-	return &plugin.ScanReport{
+	return &api.ScanReport{
 		PluginID: "provider-linux",
 		Checks:   checks,
 	}, nil

@@ -3,12 +3,12 @@ package game
 import (
 	"time"
 
-	"github.com/danielvollbro/gohl/pkg/plugin"
+	api "github.com/danielvollbro/gohl-api"
 )
 
-func CompileReport(reports []*plugin.ScanReport) GrandReport {
+func CompileReport(reports []*api.ScanReport) GrandReport {
 	var totalScore, maxScore int
-	
+
 	for _, report := range reports {
 		for _, check := range report.Checks {
 			totalScore += check.Score

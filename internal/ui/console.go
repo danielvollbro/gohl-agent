@@ -1,12 +1,13 @@
 package ui
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 
 	"github.com/danielvollbro/gohl/internal/game"
-	"github.com/danielvollbro/gohl/pkg/plugin"
 	"github.com/pterm/pterm"
+
+	api "github.com/danielvollbro/gohl-api"
 )
 
 type Console struct {
@@ -54,18 +55,18 @@ func (c *Console) PrintWarning(format string, a ...interface{}) {
 	}
 }
 
-func (c *Console) RenderReport(report *plugin.ScanReport) {
+func (c *Console) RenderReport(report *api.ScanReport) {
 	if c.Silent {
 		return
 	}
-	
+
 	pterm.DefaultSection.Println("Analysis Report: " + report.PluginID)
 
 	tableData := pterm.TableData{
 		{"ID", "CHECK", "STATUS", "SCORE"},
 	}
 
-	var failures []plugin.CheckResult
+	var failures []api.CheckResult
 
 	for _, check := range report.Checks {
 		status := pterm.FgGreen.Sprint("PASS")
@@ -87,7 +88,7 @@ func (c *Console) RenderReport(report *plugin.ScanReport) {
 	if len(failures) > 0 {
 		fmt.Println()
 		pterm.DefaultHeader.WithFullWidth().WithBackgroundStyle(pterm.NewStyle(pterm.BgRed)).Println("🛑 ACTIVE QUESTS (Fix these to level up!)")
-		
+
 		for _, fail := range failures {
 			pterm.Println(pterm.Red("● " + fail.Name))
 			pterm.Println("  " + pterm.Yellow("Objective: ") + fail.Remediation)
@@ -116,7 +117,7 @@ func (c *Console) RenderGrandTotal(score, maxScore int, rankName string, rankCol
 	}
 
 	text += fmt.Sprintf("\n\nRANK: %s", rankName)
-	
+
 	panel := pterm.DefaultBox.
 		WithTitle("🏆 GAME OVER SUMMARY").
 		WithTitleBottomCenter().
@@ -142,7 +143,7 @@ func (c *Console) PrintFinalResults(report game.GrandReport, asJson bool, previo
 		fmt.Println(string(jsonData))
 	} else {
 		fmt.Println()
-		
+
 		for _, pluginReport := range report.PluginReports {
 			c.RenderReport(pluginReport)
 			fmt.Println()

@@ -2,8 +2,8 @@ package dummy
 
 import (
 	"context"
-	
-	"github.com/danielvollbro/gohl/pkg/plugin"
+
+	api "github.com/danielvollbro/gohl-api"
 )
 
 type DummyProvider struct{}
@@ -12,8 +12,8 @@ func New() *DummyProvider {
 	return &DummyProvider{}
 }
 
-func (p *DummyProvider) Info() plugin.PluginInfo {
-	return plugin.PluginInfo{
+func (p *DummyProvider) Info() api.PluginInfo {
+	return api.PluginInfo{
 		ID:          "provider-dummy",
 		Name:        "Dummy System Scanner",
 		Version:     "0.1.0",
@@ -22,8 +22,8 @@ func (p *DummyProvider) Info() plugin.PluginInfo {
 	}
 }
 
-func (p *DummyProvider) Analyze(ctx context.Context, config map[string]string) (*plugin.ScanReport, error) {
-	checks := []plugin.CheckResult{
+func (p *DummyProvider) Analyze(ctx context.Context, config map[string]string) (*api.ScanReport, error) {
+	checks := []api.CheckResult{
 		{
 			ID:          "DUMMY-001",
 			Name:        "Check if Homelab is cool",
@@ -53,7 +53,7 @@ func (p *DummyProvider) Analyze(ctx context.Context, config map[string]string) (
 		},
 	}
 
-	return &plugin.ScanReport{
+	return &api.ScanReport{
 		PluginID: "provider-dummy",
 		Checks:   checks,
 	}, nil
