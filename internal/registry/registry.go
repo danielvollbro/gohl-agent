@@ -8,22 +8,10 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/danielvollbro/gohl/internal/provider/binary"
-	"github.com/danielvollbro/gohl/internal/provider/docker"
 	"github.com/danielvollbro/gohl/pkg/plugin"
 )
 
-type factoryFunc func() plugin.Scanner
-
-var catalog = map[string]factoryFunc{
-	"docker": func() plugin.Scanner { return docker.New() },
-}
-
 func GetProvider(name string) (plugin.Scanner, error) {
-	factory, exists := catalog[name]
-	if exists {
-		return factory(), nil
-	}
-
 	binaryPath := viper.GetString(name + ".path")
 	if binaryPath != "" {
 		// Kolla om filen finns
