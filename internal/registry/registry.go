@@ -9,7 +9,6 @@ import (
 
 	"github.com/danielvollbro/gohl/internal/provider/binary"
 	"github.com/danielvollbro/gohl/internal/provider/docker"
-	"github.com/danielvollbro/gohl/internal/provider/linux"
 	"github.com/danielvollbro/gohl/pkg/plugin"
 )
 
@@ -17,7 +16,6 @@ type factoryFunc func() plugin.Scanner
 
 var catalog = map[string]factoryFunc{
 	"docker": func() plugin.Scanner { return docker.New() },
-	"linux":  func() plugin.Scanner { return linux.New() },
 }
 
 func GetProvider(name string) (plugin.Scanner, error) {
