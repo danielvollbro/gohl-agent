@@ -1,10 +1,13 @@
 package binary
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 	"os/exec"
+	"strings"
 
 	api "github.com/danielvollbro/gohl-api"
 )
@@ -28,8 +31,24 @@ func (p *BinaryProvider) Info() api.PluginInfo {
 func (p *BinaryProvider) Analyze(ctx context.Context, config map[string]string) (*api.ScanReport, error) {
 	cmd := exec.CommandContext(ctx, p.Path)
 
+	cmd.Env = os.Environ()
+	for k, v := range config {
+		envKey := fmt.Sprintf("GOHL_CONFIG_%s", strings.ToUpper(k))
+		cmd.Env = append(cmd.Env, fmt.Sprintf("%s=%s", envKey, v))
+	}
+
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
+
 	output, err := cmd.Output()
+
 	if err != nil {
+		errorMsg := strings.TrimSpace(stderr.String())
+
+		if errorMsg != "" {
+			return nil, fmt.Errorf("%s", errorMsg)
+		}
+
 		return nil, fmt.Errorf("failed to execute provider %s: %w", p.Path, err)
 	}
 
