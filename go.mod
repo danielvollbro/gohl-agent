@@ -3,7 +3,7 @@ module github.com/danielvollbro/gohl
 go 1.25.5
 
 require (
-	github.com/danielvollbro/gohl-api v0.3.0
+	github.com/danielvollbro/gohl-api v0.4.0
 	github.com/pterm/pterm v0.12.82
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0

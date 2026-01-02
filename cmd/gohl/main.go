@@ -93,7 +93,12 @@ var scanCmd = &cobra.Command{
 
 		console.Spacer()
 
-		grandReport := game.CompileReport(allReports)
+		labID := viper.GetString("lab_id")
+		if labID == "" {
+			labID = "default-lab" // Fallback
+		}
+
+		grandReport := game.CompileReport(allReports, labID)
 
 		previousScore := -1
 		lastReport, err := storage.LoadLatest()
