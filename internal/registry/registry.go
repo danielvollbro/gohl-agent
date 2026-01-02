@@ -14,7 +14,6 @@ import (
 func GetProvider(name string) (plugin.Scanner, error) {
 	binaryPath := viper.GetString(name + ".path")
 	if binaryPath != "" {
-		// Kolla om filen finns
 		if _, err := os.Stat(binaryPath); err == nil {
 			return binary.New(name, binaryPath), nil
 		}
