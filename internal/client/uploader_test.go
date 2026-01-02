@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/danielvollbro/gohl/internal/game"
+	api "github.com/danielvollbro/gohl-api"
 )
 
 func TestUploadReport(t *testing.T) {
@@ -19,17 +19,17 @@ func TestUploadReport(t *testing.T) {
 			t.Errorf("Expected Content-Type application/json, got %s", r.Header.Get("Content-Type"))
 		}
 
-		var receivedReport game.GrandReport
+		var receivedReport api.GrandReport
 		if err := json.NewDecoder(r.Body).Decode(&receivedReport); err != nil {
 			t.Errorf("Could not decode body: %v", err)
 		}
 
 		w.WriteHeader(http.StatusOK)
 	}))
-	
+
 	defer server.Close()
 
-	dummyReport := game.GrandReport{
+	dummyReport := api.GrandReport{
 		Rank:       "Test Pilot",
 		TotalScore: 100,
 	}
@@ -47,8 +47,8 @@ func TestUploadReport_ServerError(t *testing.T) {
 	}))
 	defer server.Close()
 
-	dummyReport := game.GrandReport{}
-	
+	dummyReport := api.GrandReport{}
+
 	err := UploadReport(server.URL, dummyReport)
 
 	if err == nil {

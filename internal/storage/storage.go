@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/danielvollbro/gohl/internal/game"
+	api "github.com/danielvollbro/gohl-api"
 )
 
 const historyDirName = ".gohl/history"
@@ -20,7 +20,7 @@ func getHistoryDir() (string, error) {
 		return "", err
 	}
 	path := filepath.Join(home, historyDirName)
-	
+
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		if err := os.MkdirAll(path, 0755); err != nil {
 			return "", err
@@ -29,7 +29,7 @@ func getHistoryDir() (string, error) {
 	return path, nil
 }
 
-func Save(report game.GrandReport) error {
+func Save(report api.GrandReport) error {
 	dir, err := getHistoryDir()
 	if err != nil {
 		return err
@@ -46,7 +46,7 @@ func Save(report game.GrandReport) error {
 	return os.WriteFile(path, data, 0644)
 }
 
-func LoadLatest() (*game.GrandReport, error) {
+func LoadLatest() (*api.GrandReport, error) {
 	dir, err := getHistoryDir()
 	if err != nil {
 		return nil, err
@@ -76,7 +76,7 @@ func LoadLatest() (*game.GrandReport, error) {
 		return nil, err
 	}
 
-	var report game.GrandReport
+	var report api.GrandReport
 	if err := json.Unmarshal(data, &report); err != nil {
 		return nil, err
 	}

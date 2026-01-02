@@ -22,6 +22,8 @@ github.com/containerd/console v1.0.5/go.mod h1:YynlIjWYF8myEu6sdkwKIvGQq+cOckRm6
 github.com/cpuguy83/go-md2man/v2 v2.0.6/go.mod h1:oOW0eioCTA6cOiMLiUPZOpcVxMig6NIQQ7OS05n1F4g=
 github.com/danielvollbro/gohl-api v0.0.0-20260101231704-c43e7efc44ac h1:XSr63hChoQ7vrq23T5t1SSusRAUThh0Ao9lX5r6Hxiw=
 github.com/danielvollbro/gohl-api v0.0.0-20260101231704-c43e7efc44ac/go.mod h1:a6KhM+nDs1D+6nPlxSAaJGMoRBRX3WE/5FEcfVc5lic=
+github.com/danielvollbro/gohl-api v0.2.0 h1:g56M0Tw+r90TJmQ/0Shl4Wl00ayxCcycJTnl3T/El6w=
+github.com/danielvollbro/gohl-api v0.2.0/go.mod h1:a6KhM+nDs1D+6nPlxSAaJGMoRBRX3WE/5FEcfVc5lic=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

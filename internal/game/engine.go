@@ -6,7 +6,7 @@ import (
 	api "github.com/danielvollbro/gohl-api"
 )
 
-func CompileReport(reports []*api.ScanReport) GrandReport {
+func CompileReport(reports []*api.ScanReport) api.GrandReport {
 	var totalScore, maxScore int
 
 	for _, report := range reports {
@@ -17,7 +17,7 @@ func CompileReport(reports []*api.ScanReport) GrandReport {
 	}
 
 	rankName, _ := GetRank(totalScore, maxScore)
-	return GrandReport{
+	return api.GrandReport{
 		Timestamp:     time.Now().Format(time.RFC3339),
 		TotalScore:    totalScore,
 		MaxScore:      maxScore,

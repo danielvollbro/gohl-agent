@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/danielvollbro/gohl/internal/game"
+	api "github.com/danielvollbro/gohl-api"
 )
 
-func UploadReport(url string, report game.GrandReport) error {
+func UploadReport(url string, report api.GrandReport) error {
 	jsonData, err := json.Marshal(report)
 	if err != nil {
 		return fmt.Errorf("failed to marshal report: %w", err)

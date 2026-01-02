@@ -133,7 +133,7 @@ func (c *Console) Spacer() {
 	}
 }
 
-func (c *Console) PrintFinalResults(report game.GrandReport, asJson bool, previousScore int) {
+func (c *Console) PrintFinalResults(report api.GrandReport, asJson bool, previousScore int) {
 	if asJson {
 		jsonData, err := json.MarshalIndent(report, "", "  ")
 		if err != nil {
